@@ -59,7 +59,7 @@ Click on the localhost link that appears in the Frontend terminal
 | Yassine Ouali            | 40187964   |
 | William Charron-Boyle    | 40264407   |
 | Kadir Altinay            | 40166610   |
-| Mohammed Saaim           | 40196916   |
+| Mohammed Saaim Intikhab  | 40196916   |
 | Mohamed Redhouane Nemroud| 40153847   |
 | Rasel Abdul Samad        | 40209924   |
 | Mehdi Kahouache          | 40250581   |
