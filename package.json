@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@cypress/code-coverage": "^3.13.10",
+    "cypress": "^14.0.0"
+  },
+  "scripts": {
+  "cypress:open": "cypress open",
+  "cypress:run": "cypress run",
+  "test": "npm run cypress:run"
+}
+
+}
