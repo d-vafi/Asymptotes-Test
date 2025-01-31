@@ -6,7 +6,7 @@ export default function SGWCampus() {
 
     return (
     
-          <APIProvider apiKey={'AIzaSyAPgHpIwr-Vnr275tWrE40Mfiu7mXxpc8s'} onLoad={() => console.log('SGW Maps API has loaded.')}>
+          <APIProvider apiKey={''} onLoad={() => console.log('SGW Maps API has loaded.')}>
           <Map
           defaultZoom={17}
           defaultCenter={ { lat: 45.494899791875476, lng: -73.577922853963 } }

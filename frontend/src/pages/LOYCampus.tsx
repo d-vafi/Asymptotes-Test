@@ -6,7 +6,7 @@ export default function LOYcampus() {
 
     return (
     
-          <APIProvider apiKey={'AIzaSyAPgHpIwr-Vnr275tWrE40Mfiu7mXxpc8s'} onLoad={() => console.log('LOY Maps API has loaded.')}>
+          <APIProvider apiKey={''} onLoad={() => console.log('LOY Maps API has loaded.')}>
           <Map
           defaultZoom={17}
           // 45.45813875411042, -73.6390888797903
