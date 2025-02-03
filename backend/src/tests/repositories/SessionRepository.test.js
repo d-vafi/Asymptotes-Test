@@ -1,17 +1,18 @@
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Pool } from "pg";
 import { SessionRepository } from "../../repositories/sessionRepository";
 
-jest.mock("pg", () => {
+vi.mock("pg", () => {
   const mockClient = {
-    query: jest.fn(),
-    connect: jest.fn(),
-    release: jest.fn(),
+    query: vi.fn(),
+    connect: vi.fn(),
+    release: vi.fn(),
   };
   const mockPool = {
-    query: jest.fn(),
-    connect: jest.fn(() => mockClient),
+    query: vi.fn(),
+    connect: vi.fn(() => mockClient),
   };
-  return { Pool: jest.fn(() => mockPool) };
+  return { Pool: vi.fn(() => mockPool) };
 });
 
 describe("SessionRepository", () => {
@@ -21,7 +22,7 @@ describe("SessionRepository", () => {
   beforeEach(() => {
     pool = new Pool();
     sessionRepository = new SessionRepository(pool);
-    jest.clearAllMocks(); // Reset mocks before each test
+    vi.clearAllMocks(); // Reset mocks before each test
   });
 
   describe("createSession", () => {

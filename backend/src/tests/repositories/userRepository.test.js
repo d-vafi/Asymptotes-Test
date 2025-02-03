@@ -1,11 +1,12 @@
+import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
 import { Pool } from "pg";
 import { UserRepository } from "../../repositories/userRepository";
 
-jest.mock("pg", () => {
+vi.mock("pg", () => {
   const mockPool = {
-    query: jest.fn(),
+    query: vi.fn(),
   };
-  return { Pool: jest.fn(() => mockPool) };
+  return { Pool: vi.fn(() => mockPool) };
 });
 
 describe("UserRepository", () => {
@@ -18,7 +19,7 @@ describe("UserRepository", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("createUser", () => {
