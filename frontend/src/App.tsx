@@ -8,17 +8,13 @@ import NavBar from './NavBar';
 function App() {
   return (
     <div className="flex flex-col top-0 left-0 w-screen h-screen">
-        <NavBar />
-      
-
+      <NavBar />
       {/* // The div needs a constant height and width to display the map*/}
-      <div style={{ height: '78vh', width: '100vw' }}>
+      <div style={{ height: '85vh', width: '100vw' }}>
         <MapComponent />
       </div>
-      <div>
-        <BottomNavBar />
-      </div>
 
+      <BottomNavBar />
     </div>
   );
 }
