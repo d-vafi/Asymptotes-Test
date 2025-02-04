@@ -1,14 +1,14 @@
 import './App.css'
 import {APIProvider, Map, MapCameraChangedEvent} from '@vis.gl/react-google-maps';
+const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 
 
 function MapComponent() {
- 
 
   return (
 
-      <APIProvider apiKey={'AIzaSyAlwcko-mshwhZCheZpMjEJCwVBZ8Hhb-Q'} onLoad={() => console.log('Maps API has loaded.')}>
+      <APIProvider apiKey={googleKey} onLoad={() => console.log('Maps API has loaded.')}>
       <Map
       defaultZoom={17}
       //defaultCenter={ { lat: -33.860664, lng: 151.208138 } } 45.494899791875476, -73.577922853963
@@ -19,7 +19,6 @@ function MapComponent() {
       </Map>
       </APIProvider>
 
-    
   );
 }
 
