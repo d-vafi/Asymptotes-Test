@@ -42,7 +42,7 @@ const BottomNavBar = () => {
   return (
 
     <ThemeProvider theme={theme}>
-      <div>
+      <div id="bottomNavBar">
 
         {/* this is the menu that appears when the map icon is clicked */}
         {openMapMenu && (
