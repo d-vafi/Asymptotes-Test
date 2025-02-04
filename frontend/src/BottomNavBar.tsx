@@ -29,6 +29,16 @@ const BottomNavBar = () => {
   const location = useLocation();
   const [openMapMenu, setOpenMapMenu] = useState(false);
 
+  function addMapLabel() {
+    if (location.pathname === "/") {
+      return "Map: SGW";
+    } else if (location.pathname === "/LOYcampus") {
+      return "Map: Loyola";
+    } else {
+      return "Map";
+    }
+  }
+
   return (
 
     <ThemeProvider theme={theme}>
@@ -65,21 +75,25 @@ const BottomNavBar = () => {
         >
 
           <BottomNavigationAction
+            test-id="shuttle-button"
             label="Shuttle"
             icon={<DirectionsBusIcon />}
             value="/shuttle" />
 
           <BottomNavigationAction
-            label="Map"
+            test-id="map-button"
+            label={location.pathname === "/" ? "Map: SGW" : addMapLabel()}
             icon={<MapRounded />}
             value="/" />
 
           <BottomNavigationAction
+            test-id="directions-button"
             label="Directions"
             value="/directions"
             icon={<DirectionsRoundedIcon />} />
 
           <BottomNavigationAction
+            test-id="schedule-button"
             label="Schedule"
             value="/schedule"
             icon={<CalendarMonthRoundedIcon />} />
