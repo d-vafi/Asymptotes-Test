@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import {describe} from 'vitest';
-import BottomNavBar from '../BottomNavBar';
+import BottomNavBar from '../Components/BottomNavBar';
 
 describe('Testing Bottom NavBar UI', () => {
     it('renders bottom navbar elements', () => {
