@@ -1,12 +1,13 @@
 import '../App.css'
 import {APIProvider, Map, MapCameraChangedEvent} from '@vis.gl/react-google-maps';
+const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 
 export default function LOYcampus() {
 
     return (
     
-          <APIProvider apiKey={''} onLoad={() => console.log('LOY Maps API has loaded.')}>
+          <APIProvider apiKey={googleKey} onLoad={() => console.log('LOY Maps API has loaded.')}>
           <Map
           defaultZoom={17}
           // 45.45813875411042, -73.6390888797903
