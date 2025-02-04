@@ -3,8 +3,8 @@ import './App.css';
 import SGWCampus from './pages/SGWCampus';
 import LOYCampus from './pages/LOYCampus';
 
-import BottomNavBar from './BottomNavBar';
-import NavBar from './NavBar';
+import BottomNavBar from './Components/BottomNavBar';
+import NavBar from './Components/NavBar';
 import { Routes, Route } from 'react-router-dom';
 
 
