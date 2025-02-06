@@ -1,7 +1,4 @@
 import './App.css';
-//might need to correct this to SGWcampus (vscode causes problems with the file name)
-import SGWCampus from './pages/SGWCampus';
-import LOYCampus from './pages/LOYCampus';
 
 import BottomNavBar from './Components/BottomNavBar';
 import NavBar from './Components/NavBar';
@@ -19,15 +16,18 @@ function App() {
           <Route path="/map"
             element={
               // <div style={{ height: '86vh', width: '100vw' }}>
-                <MapComponent/>}
-              // </div>}
+              <MapComponent />}
+          // </div>}
           />
-          <Route path="/shuttle" element={<div>404 Not Found</div>} />
-          <Route path="/directions" element={<div>404 Not Found</div>} />
-          <Route path="/schedule" element={<div>404 Not Found</div>} />
+          <Route path="/shuttle" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
+          <Route path="/directions" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
+          <Route path="/schedule" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
 
         </Routes>
-        <BottomNavBar />
+        <div className='fixed bottom-0 w-full'>
+          <BottomNavBar />
+        </div>
+
       </>
     </div>
   );

@@ -43,11 +43,14 @@ function MapComponent() {
       <APIProvider apiKey={googleKey} onLoad={() => console.log('Maps API has loaded.')}>
 
         <Map
-          defaultZoom={zoomSetting}
+         zoom={zoomSetting}
           center={center}
-          onCameraChanged={(ev: MapCameraChangedEvent) =>
-            console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-           
+          gestureHandling="greedy"
+          onCameraChanged={(ev: MapCameraChangedEvent) =>{
+            console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
+            setZoomSetting(ev.detail.zoom);
+            setCenter(ev.detail.center);
+          }
           }>
         </Map>
       </APIProvider>
