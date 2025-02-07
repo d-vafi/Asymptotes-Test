@@ -8,7 +8,7 @@ import { sessionCookieMiddleware } from "./middlewares/sessionMiddleware.js";
 import cookieParser from "cookie-parser";
 
 const app: Application = express();
-app.use(errorMiddleware);
+
 app.use(
   cors({
     origin: "http://localhost:5173", 
@@ -32,9 +32,14 @@ pool.connect((err,client, release) => {
 // routes
 app.use('/api', routes); 
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.get('/', (req, res) => {
   res.send('Hello Asymptotes');
 });
 
+app.use(errorMiddleware);
 
 export default app;
