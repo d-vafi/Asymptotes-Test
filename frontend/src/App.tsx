@@ -1,11 +1,9 @@
 import './App.css';
-//might need to correct this to SGWcampus (vscode causes problems with the file name)
-import SGWCampus from './pages/SGWCampus';
-import LOYCampus from './pages/LOYCampus';
 
 import BottomNavBar from './Components/BottomNavBar';
 import NavBar from './Components/NavBar';
 import { Routes, Route } from 'react-router-dom';
+import MapComponent from './Components/MapComponent';
 
 
 function App() {
@@ -14,25 +12,22 @@ function App() {
       <>
         <NavBar />
         <Routes>
-          <Route path="/LOYcampus"
-            element={
-              <div style={{ height: '86vh', width: '100vw' }}>
-                <LOYCampus />
-              </div>}
-          />
 
-          <Route path="/"
+          <Route path="/map"
             element={
-              <div style={{ height: '86vh', width: '100vw' }}>
-                <SGWCampus />
-              </div>}
+              // <div style={{ height: '86vh', width: '100vw' }}>
+              <MapComponent />}
+          // </div>}
           />
-          <Route path="/shuttle" element={<div>404 Not Found</div>} />
-          <Route path="/directions" element={<div>404 Not Found</div>} />
-          <Route path="/schedule" element={<div>404 Not Found</div>} />
+          <Route path="/shuttle" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
+          <Route path="/directions" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
+          <Route path="/schedule" element={<div className='flex justify-center items-center h-full'>404 Not Found</div>} />
 
         </Routes>
-        <BottomNavBar />
+        <div className='fixed bottom-0 w-full'>
+          <BottomNavBar />
+        </div>
+
       </>
     </div>
   );

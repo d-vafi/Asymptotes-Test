@@ -40,11 +40,7 @@ describe("Testing bottom navigation bar", () => {
         cy.get("div#bottomNavBar").contains("SGW").should("exist")
         cy.get("div#bottomNavBar").contains("Loyola").should("exist")
 
-        cy.visit("http://localhost:5173/LOYcampus")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
+
 
     });
 
