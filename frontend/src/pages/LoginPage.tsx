@@ -1,27 +1,54 @@
-// src/pages/LoginPage.tsx
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const api = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000",
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError("");
+  
     if (!email || !password) {
-      setError('Please fill out both fields');
+      setError("Please fill out both fields");
       return;
     }
-
-    // Here, add your logic for handling user login (e.g., API call)
-    console.log({ email, password });
+  
+    setLoading(true);
+    try {
+      const response = await api.post<{
+        user: { id: number; email: string; username: string };
+        sessionToken: string;
+      }>("/api/auth/login", { email, password });
+  
+      const { sessionToken } = response.data; 
+  
+      localStorage.setItem("sessionToken", sessionToken); // Store token
+      alert("Login successful!");
+      navigate("/"); // Redirect after login
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Invalid credentials");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="login-page">
       <h2>Log In</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
@@ -29,6 +56,7 @@ const LoginPage = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div>
@@ -37,10 +65,12 @@ const LoginPage = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Log In"}
+        </button>
       </form>
       <p>
         Don't have an account? <Link to="/sign-up">Sign Up</Link>
