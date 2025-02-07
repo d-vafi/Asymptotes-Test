@@ -8,6 +8,7 @@ import WelcomePage from './pages/WelcomePage';
 import RoleSelectionPage from './pages/RoleSelectionPage';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 
 import BottomNavBar from './Components/BottomNavBar';
 import NavBar from './Components/NavBar';
@@ -29,6 +30,7 @@ function App() {
             <Route path="/role-selection" element={<RoleSelectionPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
           </>
         ) : (
           // Campus Routes (show these only after login)

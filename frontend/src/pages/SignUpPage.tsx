@@ -71,7 +71,7 @@ const SignUpPage = () => {
     try {
       const response = await api.post('/api/auth/register', formData);
       alert('Registration successful! Please check your email for verification.');
-      navigate('/login');
+      navigate('/verify-email');
     } catch (error: any) {
       setApiError(error.response?.data?.error || 'An error occurred. Please try again.');
     } finally {
