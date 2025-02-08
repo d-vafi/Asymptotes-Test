@@ -1,0 +1,259 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2025-02-05T00:13:43Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/22080570",
+        "addr:city": "Montréal",
+        "addr:housenumber": "1455",
+        "addr:province": "Quebec",
+        "addr:street": "Boulevard de Maisonneuve Ouest",
+        "building": "university",
+        "building:levels": "13",
+        "building:levels:underground": "2",
+        "height": "51.2064",
+        "learning": "university",
+        "name": "H - Henry F. Hall Building",
+        "wheelchair": "yes",
+        "wikidata": "Q20006830",
+        "wikipedia": "en:Henry F. Hall Building"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.5788241,
+              45.4968261
+            ],
+            [
+              -73.5786245,
+              45.4970373
+            ],
+            [
+              -73.5784089,
+              45.4972544
+            ],
+            [
+              -73.5782927,
+              45.4973714
+            ],
+            [
+              -73.578399,
+              45.4974227
+            ],
+            [
+              -73.5785783,
+              45.4975092
+            ],
+            [
+              -73.5790075,
+              45.4977164
+            ],
+            [
+              -73.5790121,
+              45.497713
+            ],
+            [
+              -73.579269,
+              45.4974475
+            ],
+            [
+              -73.5795378,
+              45.4971739
+            ],
+            [
+              -73.5795431,
+              45.4971671
+            ],
+            [
+              -73.5794591,
+              45.497128
+            ],
+            [
+              -73.5788241,
+              45.4968261
+            ]
+          ]
+        ]
+      },
+      "id": "way/22080570"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/103248064",
+        "building": "university",
+        "building:levels": "19",
+        "material": "concrete",
+        "name": "EV - Engineering, Computer Science and Visual Arts Integrated Complex"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.578441,
+              45.4959332
+            ],
+            [
+              -73.578729,
+              45.4956265
+            ],
+            [
+              -73.5787035,
+              45.4956087
+            ],
+            [
+              -73.5786538,
+              45.4955877
+            ],
+            [
+              -73.5786662,
+              45.4955735
+            ],
+            [
+              -73.5786747,
+              45.4955639
+            ],
+            [
+              -73.5786836,
+              45.4955529
+            ],
+            [
+              -73.5783846,
+              45.4954065
+            ],
+            [
+              -73.5780359,
+              45.4952448
+            ],
+            [
+              -73.5780238,
+              45.4952542
+            ],
+            [
+              -73.5778682,
+              45.4951856
+            ],
+            [
+              -73.5778318,
+              45.4952218
+            ],
+            [
+              -73.5776149,
+              45.4954371
+            ],
+            [
+              -73.577742,
+              45.4955018
+            ],
+            [
+              -73.5777306,
+              45.4955147
+            ],
+            [
+              -73.5777562,
+              45.4955256
+            ],
+            [
+              -73.5776945,
+              45.4955902
+            ],
+            [
+              -73.5776118,
+              45.4955496
+            ],
+            [
+              -73.5775381,
+              45.4955134
+            ],
+            [
+              -73.5772325,
+              45.4958361
+            ],
+            [
+              -73.5774777,
+              45.495952
+            ],
+            [
+              -73.5777106,
+              45.4960636
+            ],
+            [
+              -73.578005,
+              45.4957525
+            ],
+            [
+              -73.5783135,
+              45.4959029
+            ],
+            [
+              -73.5783336,
+              45.4958841
+            ],
+            [
+              -73.578441,
+              45.4959332
+            ]
+          ]
+        ]
+      },
+      "id": "way/103248064"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/979438074",
+        "addr:city": "Montréal",
+        "addr:housenumber": "1535",
+        "addr:province": "Quebec",
+        "addr:street": "Boulevard De Maisonneuve Ouest",
+        "building": "university",
+        "building:levels": "11",
+        "name": "LS - Concordia Learning Square",
+        "roof:shape": "flat"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -73.5794628,
+              45.4961716
+            ],
+            [
+              -73.5792514,
+              45.4963919
+            ],
+            [
+              -73.5795528,
+              45.496534
+            ],
+            [
+              -73.579672,
+              45.4964097
+            ],
+            [
+              -73.5795726,
+              45.4963629
+            ],
+            [
+              -73.5796648,
+              45.4962668
+            ],
+            [
+              -73.5794628,
+              45.4961716
+            ]
+          ]
+        ]
+      },
+      "id": "way/979438074"
+    }
+  ]
+}

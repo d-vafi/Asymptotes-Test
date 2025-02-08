@@ -1,68 +1,96 @@
-import React, { useEffect, useState } from "react";
-
-interface Location {
-  lat: number;
-  lng: number;
-}
+import React, { useEffect, useContext, useState } from "react";
+import Modal from "./Modal";
+import { LocationContext } from "./LocationContext";
 
 function UserLocation() {
-    const [location, setLocation] = useState<Location | null>(null);
-    const [error, setError] = useState<string | null>(null);
+  const { location, setLocation, error, setError } = useContext(LocationContext);
+  const [isCalibrating, setIsCalibrating] = useState<boolean>(true);
+  const [isOnCampus, setIsOnCampus] = useState<boolean | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [watchId, setWatchId] = useState<number | null>(null);
 
-    useEffect(() => {
-        if (!navigator.geolocation) {
-            setError("Geolocation is not supported by your browser.");
-            return;
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    const success = (position: GeolocationPosition) => {
+      const { latitude, longitude, accuracy } = position.coords;
+      console.log(`New Location: Lat: ${latitude}, Lng: ${longitude}, Accuracy: ${accuracy}m`);
+
+      if (accuracy > 151) {
+        console.warn("Waiting for better accuracy...");
+        if (isOnCampus === null) {
+          setIsModalVisible(true);
         }
+        return;
+      }
 
-        const success = (position: GeolocationPosition) => {
-            const { latitude, longitude, accuracy } = position.coords;
+      // Update the shared context with the new location.
+      setLocation({ lat: latitude, lng: longitude });
+      setIsCalibrating(false);
+      setError(null);
+    };
 
-            console.log(`New Location Fetched: Lat: ${latitude}, Lng: ${longitude}, Accuracy: ${accuracy} meters`);
+    const handleError = (err: GeolocationPositionError) => {
+      setError("Failed to get location. Please allow access and try later.");
+      console.error(err);
+    };
 
-            if (accuracy > 50) {
-                console.warn("Skipping inaccurate data.");
-                return;
-            }
+    const id = navigator.geolocation.watchPosition(success, handleError, {
+      enableHighAccuracy: true,
+      timeout: 30000,
+      maximumAge: 0,
+    });
 
-            setLocation({
-                lat: latitude,
-                lng: longitude,
-            });
-            setError(null);
-        };
+    setWatchId(id);
 
-        const error = (err: GeolocationPositionError) => {
-            setError("Failed to get location. Please allow access and try later.");
-            console.error(err);
-        };
+    return () => {
+      navigator.geolocation.clearWatch(id);
+      console.log("Stopped watching location.");
+    };
+  }, [setLocation, setError, isOnCampus]);
 
-      
-        const id = navigator.geolocation.watchPosition(success, error, {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0,
-        });
+  const handleConfirm = () => {
+    setIsOnCampus(true);
+    setIsModalVisible(false);
+  };
 
-        return () => {
-            navigator.geolocation.clearWatch(id);
-            console.log("Stopped watching location.");
-        };
-    }, []);
+  const handleCancel = () => {
+    setIsOnCampus(false);
+    setIsCalibrating(false);
+    setIsModalVisible(false);
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      console.log("Location tracking stopped.");
+    }
+  };
 
-    return (
-        <div>
-            <h2>Your Location</h2>
-            {error ? (
-                <p>{error}</p>
-            ) : location ? (
-                <p>Latitude: {location.lat}, Longitude: {location.lng}</p>
-            ) : (
-                <p>Fetching your location</p>
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <h2>Your Location</h2>
+      {error ? (
+        <p>{error}</p>
+      ) : isCalibrating ? (
+        <p>Waiting for better accuracy...</p>
+      ) : location ? (
+        <p>Latitude: {location.lat}, Longitude: {location.lng}</p>
+      ) : isOnCampus === false ? (
+        <p>You are not on campus.</p>
+      ) : (
+        <p>Fetching your location...</p>
+      )}
+
+      {isModalVisible && (
+        <Modal
+          message="Are you on campus? If yes, please move closer to a window or an open area to improve GPS accuracy."
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
+    </div>
+  );
 }
 
 export default UserLocation;
-
