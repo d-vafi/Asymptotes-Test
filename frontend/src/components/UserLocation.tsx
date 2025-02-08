@@ -22,7 +22,6 @@ function UserLocation() {
 
     const success = (position: GeolocationPosition) => {
       const { latitude, longitude, accuracy } = position.coords;
-
       console.log(`New Location: Lat: ${latitude}, Lng: ${longitude}, Accuracy: ${accuracy}m`);
 
       if (accuracy > 151) {

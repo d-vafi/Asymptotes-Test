@@ -1,5 +1,7 @@
 import './App.css';
-
+import UserLocation from './components/UserLocation';
+import { LocationProvider } from './components/LocationContext';
+import MapWrapper from './MapWrapper';
 import BottomNavBar from './Components/BottomNavBar';
 import NavBar from './Components/NavBar';
 import { Routes, Route } from 'react-router-dom';
@@ -28,7 +30,12 @@ function App() {
         </div>
 
       </>
+      //</div><div className="p-4 bg-gradient-to-r from-blue-500 to-gray-700 text-white">
+  <LocationProvider>
+   <MapWrapper />
+   <UserLocation />
+   </LocationProvider>
     </div>
   );
 }
-export default App
+export default App;
