@@ -5,7 +5,6 @@ import NavBar from './Components/NavBar';
 import { Routes, Route } from 'react-router-dom';
 import MapComponent from './Components/MapComponent';
 
-
 function App() {
   return (
     <div className="flex flex-col top-0 left-0 w-screen h-screen">
