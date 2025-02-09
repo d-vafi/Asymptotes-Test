@@ -3,6 +3,13 @@ import { Outlet, useLocation } from 'react-router-dom';
 import NavBar from './Components/NavBar';
 import BottomNavBar from './Components/BottomNavBar';
 
+import './App.css'
+import UserLocation from './components/UserLocation';
+import MapComponent from './MapComponent';
+import { LocationProvider } from './components/LocationContext';
+import MapWrapper from './MapWrapper';
+
+
 function App() {
   const location = useLocation();
 
@@ -28,3 +35,13 @@ function App() {
 }
 
 export default App;
+    //<div className="p-4 bg-gradient-to-r from-blue-500 to-gray-700 text-white">
+  <LocationProvider>
+   <MapWrapper />
+   <UserLocation />
+   </LocationProvider>
+  
+  );
+}
+
+export default App
