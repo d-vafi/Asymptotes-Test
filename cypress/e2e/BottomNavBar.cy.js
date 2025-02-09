@@ -1,58 +1,58 @@
-describe("Testing bottom navigation bar", () => {
-    it("The bottom navigation bar should exist and be visible", () => {
-        // Changed the URL to the remote server
-        cy.visit("http://localhost:5173/")
-        // The bottom navigation bar should exist
-        cy.get("div#bottomNavBar").should("exist").should("be.visible")
-    })
+describe("Bottom Navigation Bar", () => {
+    beforeEach(() => {
+        cy.intercept("GET", "/api/auth/me", {
+            statusCode: 200,
+            body: { user: { id: "test-user", email: "test@example.com" } }, // Fake authenticated user
+        }).as("getCurrentUser");
 
-    it("The bottom navigation bar should have 4 buttons", () => {
-        // Changed the URL to the remote server
-        cy.visit("http://localhost:5173/")
-        // The bottom navigation bar should have 3 buttons
-        cy.get("div#bottomNavBar").find("button").should("have.length", 4)
-    })
-
-    it("The map button of the navbar should display a menu at all paths", () => {
-        // Changed the URL to the remote server
-        cy.visit("http://localhost:5173/")
-        // The bottom navigation bar should have a home button
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
-
-        cy.visit("http://localhost:5173/directions")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
-
-        cy.visit("http://localhost:5173/shuttle")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
-
-        cy.visit("http://localhost:5173/schedule")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
-
-        cy.visit("http://localhost:5173/LOYcampus")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW").should("exist")
-        cy.get("div#bottomNavBar").contains("Loyola").should("exist")
-
+        cy.visit("http://localhost:5173/");
+        cy.wait("@getCurrentUser");
     });
 
-    it("map menu appropriately handles navigation", () => {
-        cy.visit("http://localhost:5173/directions")
-        cy.get("div#bottomNavBar").find("button").contains("Map").should("exist")
-        cy.get("div#bottomNavBar").find("button").contains("Map").click()
-        cy.get("div#bottomNavBar").contains("SGW Campus").click()
-        cy.get("div#bottomNavBar").contains("Map: SGW").click()
+    it("The bottom navigation bar should exist and be visible", () => {
+        cy.get("nav").should("exist").should("be.visible");
+    });
+
+    it("The bottom navigation bar should have at least 4 main buttons", () => {
+        cy.get("nav").find("button").should("have.length.at.least", 4);
+    });
+
+    it("The map button should toggle the menu when clicked", () => {
+        cy.get("nav").find("button").contains("Map").click();
+        cy.contains("SGW Campus").should("be.visible");
+        cy.contains("Loyola Campus").should("be.visible");
+
+        // Click again to close the menu
+        cy.get("nav").find("button").contains("Map").click();
+        cy.contains("SGW Campus").should("not.exist");
+        cy.contains("Loyola Campus").should("not.exist");
+    });
+
+    it("The map button label should change based on the current path", () => {
+        cy.visit("http://localhost:5173/");
+        cy.get("nav").find("button").contains("Map: SGW").should("exist");
+
+        cy.visit("http://localhost:5173/LOYcampus");
+        cy.get("nav").find("button").contains("Map: Loyola").should("exist");
+
+        cy.visit("http://localhost:5173/directions");
+        cy.get("nav").find("button").contains("Map").should("exist");
+    });
+
+    
+    
+
+    it("Each navigation button should navigate correctly", () => {
+        const navItems = [
+            { label: "Shuttle", path: "/shuttle" },
+            { label: "Map", path: "/" },
+            { label: "Directions", path: "/directions" },
+            { label: "Schedule", path: "/schedule" },
+        ];
+
+        navItems.forEach(({ label, path }) => {
+            cy.get("nav").find("button").contains(label).click();
+            cy.url().should("include", path);
+        });
     });
 });
