@@ -1,58 +1,68 @@
-describe("Bottom Navigation Bar", () => {
-    beforeEach(() => {
-        cy.intercept("GET", "/api/auth/me", {
-            statusCode: 200,
-            body: { user: { id: "test-user", email: "test@example.com" } }, // Fake authenticated user
-        }).as("getCurrentUser");
+import React, { useState, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Bus, Map, Navigation, Calendar } from 'lucide-react';
 
-        cy.visit("http://localhost:5173/");
-        cy.wait("@getCurrentUser");
-    });
+const BottomNavBar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [openMapMenu, setOpenMapMenu] = useState(false);
 
-    it("The bottom navigation bar should exist and be visible", () => {
-        cy.get("nav").should("exist").should("be.visible");
-    });
+  const mapLabel = useMemo(() => {
+    if (location.pathname === '/') return 'Map: SGW';
+    if (location.pathname === '/LOYcampus') return 'Map: Loyola';
+    return 'Map';
+  }, [location.pathname]);
 
-    it("The bottom navigation bar should have at least 4 main buttons", () => {
-        cy.get("nav").find("button").should("have.length.at.least", 4);
-    });
+  const handleNavigation = (value: string) => {
+    if (value === '/') {
+      setOpenMapMenu((prev) => !prev);
+    } else {
+      if (openMapMenu) setOpenMapMenu(false);
+      navigate(value);
+    }
+  };
 
-    it("The map button should toggle the menu when clicked", () => {
-        cy.get("nav").find("button").contains("Map").click();
-        cy.contains("SGW Campus").should("be.visible");
-        cy.contains("Loyola Campus").should("be.visible");
+  const NavButton = ({ icon: Icon, label, value, isActive }: { icon: React.ElementType; label: string; value: string; isActive: boolean }) => (
+    <button
+      onClick={() => handleNavigation(value)}
+      aria-label={label}
+      aria-current={isActive ? 'page' : undefined}
+      className={`flex flex-1 flex-col items-center justify-center px-2 py-1 transition-all duration-300
+        ${isActive ? 'text-white bg-gradient-to-r from-[#4361ee] to-[#7209b7]' : 'text-gray-500'}
+        hover:text-white hover:bg-gradient-to-r hover:from-[#4361ee] hover:to-[#7209b7] hover:bg-opacity-80`}
+    >
+      <Icon className={`h-6 w-6 mb-1 transition-all duration-300 ${isActive ? 'scale-110' : 'scale-100'}`} />
+      <span className="text-xs font-medium">{label}</span>
+    </button>
+  );
 
-        // Click again to close the menu
-        cy.get("nav").find("button").contains("Map").click();
-        cy.contains("SGW Campus").should("not.exist");
-        cy.contains("Loyola Campus").should("not.exist");
-    });
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-50">
+      {openMapMenu && (
+        <div className="bg-white shadow-lg animate-slide-up">
+          <button
+            onClick={() => navigate('/')}
+            className="w-full p-3 text-left hover:bg-gradient-to-r hover:from-[#4361ee] hover:to-[#7209b7] hover:text-white transition-colors"
+          >
+            SGW Campus
+          </button>
+          <button
+            onClick={() => navigate('/LOYcampus')}
+            className="w-full p-3 text-left hover:bg-gradient-to-r hover:from-[#4361ee] hover:to-[#7209b7] hover:text-white transition-colors"
+          >
+            Loyola Campus
+          </button>
+        </div>
+      )}
 
-    it("The map button label should change based on the current path", () => {
-        cy.visit("http://localhost:5173/");
-        cy.get("nav").find("button").contains("Map: SGW").should("exist");
+      <nav className="flex h-16 bg-white shadow-lg backdrop-blur-md">
+        <NavButton icon={Bus} label="Shuttle" value="/shuttle" isActive={location.pathname === '/shuttle'} />
+        <NavButton icon={Map} label={mapLabel} value="/" isActive={location.pathname === '/' || location.pathname === '/LOYcampus'} />
+        <NavButton icon={Navigation} label="Directions" value="/directions" isActive={location.pathname === '/directions'} />
+        <NavButton icon={Calendar} label="Schedule" value="/schedule" isActive={location.pathname === '/schedule'} />
+      </nav>
+    </div>
+  );
+};
 
-        cy.visit("http://localhost:5173/LOYcampus");
-        cy.get("nav").find("button").contains("Map: Loyola").should("exist");
-
-        cy.visit("http://localhost:5173/directions");
-        cy.get("nav").find("button").contains("Map").should("exist");
-    });
-
-    
-    
-
-    it("Each navigation button should navigate correctly", () => {
-        const navItems = [
-            { label: "Shuttle", path: "/shuttle" },
-            { label: "Map", path: "/" },
-            { label: "Directions", path: "/directions" },
-            { label: "Schedule", path: "/schedule" },
-        ];
-
-        navItems.forEach(({ label, path }) => {
-            cy.get("nav").find("button").contains(label).click();
-            cy.url().should("include", path);
-        });
-    });
-});
+export default BottomNavBar;
