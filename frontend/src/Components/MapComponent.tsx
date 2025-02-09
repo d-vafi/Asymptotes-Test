@@ -1,25 +1,49 @@
-import './App.css'
-import {APIProvider, Map, MapCameraChangedEvent} from '@vis.gl/react-google-maps';
-const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import React, { useEffect, useContext } from "react";
+import { useMap } from "@vis.gl/react-google-maps";
+import { LocationContext } from "./LocationContext";
 
+interface MapComponentProps {
+  geoJsonData: any;
+  setIsUserInsideBuilding: (inside: boolean) => void;
+}
 
+function MapComponent({ geoJsonData, setIsUserInsideBuilding }: MapComponentProps) {
+  const map = useMap();
+  const { location: userLocation } = useContext(LocationContext);
 
-function MapComponent() {
+  useEffect(() => {
+    if (!map || !geoJsonData || !userLocation) return;
 
-  return (
+    map.data.forEach((feature) => map.data.remove(feature));
 
-      <APIProvider apiKey={googleKey} onLoad={() => console.log('Maps API has loaded.')}>
-      <Map
-      defaultZoom={17}
-      //defaultCenter={ { lat: -33.860664, lng: 151.208138 } } 45.494899791875476, -73.577922853963
-      defaultCenter={ { lat: 45.494899791875476, lng: -73.577922853963 } }
-      onCameraChanged={ (ev: MapCameraChangedEvent) =>
-        console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-      }>
-      </Map>
-      </APIProvider>
+    // Load GeoJSON
+    map.data.addGeoJson(geoJsonData);
 
-  );
+    const userLatLng = new google.maps.LatLng(userLocation.lat, userLocation.lng);
+    let userInsideBuilding = false;
+
+    map.data.forEach((feature) => {
+      const geometry = feature.getGeometry();
+      if (geometry?.getType() === "Polygon") {
+        const polygon = new google.maps.Polygon({
+          paths: geometry.getArray().map((path) =>
+            path.getArray().map((coord) => ({ lat: coord.lat(), lng: coord.lng() }))
+          ),
+        });
+
+        if (google.maps.geometry.poly.containsLocation(userLatLng, polygon)) {
+          userInsideBuilding = true;
+          map.data.overrideStyle(feature, { fillColor: "red", fillOpacity: 0.8 });
+        } else {
+          map.data.overrideStyle(feature, { fillColor: "blue", fillOpacity: 0.5 });
+        }
+      }
+    });
+
+    setIsUserInsideBuilding(userInsideBuilding);
+  }, [map, geoJsonData, userLocation]);
+
+  return null;
 }
 
 export default MapComponent

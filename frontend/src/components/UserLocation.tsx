@@ -8,6 +8,7 @@ function UserLocation() {
   const [isOnCampus, setIsOnCampus] = useState<boolean | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [watchId, setWatchId] = useState<number | null>(null);
+  const [hasReceivedLocation, setHasReceivedLocation] = useState<boolean>(false);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -19,18 +20,18 @@ function UserLocation() {
       const { latitude, longitude, accuracy } = position.coords;
       console.log(`New Location: Lat: ${latitude}, Lng: ${longitude}, Accuracy: ${accuracy}m`);
 
+      setHasReceivedLocation(true);
+
       if (accuracy > 151) {
         console.warn("Waiting for better accuracy...");
-        if (isOnCampus === null) {
-          setIsModalVisible(true);
-        }
+        setIsModalVisible(true); 
         return;
       }
 
-      // Update the shared context with the new location.
       setLocation({ lat: latitude, lng: longitude });
       setIsCalibrating(false);
       setError(null);
+      setIsModalVisible(false);
     };
 
     const handleError = (err: GeolocationPositionError) => {
@@ -50,16 +51,16 @@ function UserLocation() {
       navigator.geolocation.clearWatch(id);
       console.log("Stopped watching location.");
     };
-  }, [setLocation, setError, isOnCampus]);
+  }, [setLocation, setError]);
 
   const handleConfirm = () => {
     setIsOnCampus(true);
     setIsModalVisible(false);
   };
+  
 
   const handleCancel = () => {
     setIsOnCampus(false);
-    setIsCalibrating(false);
     setIsModalVisible(false);
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
@@ -69,22 +70,17 @@ function UserLocation() {
 
   return (
     <div>
-      <h2>Your Location</h2>
       {error ? (
         <p>{error}</p>
-      ) : isCalibrating ? (
-        <p>Waiting for better accuracy...</p>
-      ) : location ? (
-        <p>Latitude: {location.lat}, Longitude: {location.lng}</p>
-      ) : isOnCampus === false ? (
+      ) : !hasReceivedLocation ? null : isModalVisible ? null : isOnCampus === false ? (
         <p>You are not on campus.</p>
-      ) : (
-        <p>Fetching your location...</p>
-      )}
+      ) : isOnCampus === true ? (
+        <p>Please move closer to a window or an open area to improve GPS accuracy.</p>
+      ) : null}
 
       {isModalVisible && (
         <Modal
-          message="Are you on campus? If yes, please move closer to a window or an open area to improve GPS accuracy."
+          message="Are you on campus?"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
         />
@@ -92,5 +88,5 @@ function UserLocation() {
     </div>
   );
 }
-
-export default UserLocation;
+ 
+export default UserLocation

@@ -1,21 +1,33 @@
-import '../App.css'
-import {APIProvider, Map, MapCameraChangedEvent} from '@vis.gl/react-google-maps';
-const googleKey=import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import React, { useEffect, useState, useContext } from "react";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import { LocationContext } from "../Components/LocationContext";
+import MapComponent from "../Components/MapComponent";
 
-export default function SGWCampus() {
+const CAMPUS_COORDINATES = { lat: 45.4949, lng: -73.5779 };
 
-    return (
-    
-          <APIProvider apiKey={googleKey} onLoad={() => console.log('SGW Maps API has loaded.')}>
-          <Map
-          defaultZoom={17}
-          defaultCenter={ { lat: 45.494899791875476, lng: -73.577922853963 } }
-          onCameraChanged={ (ev: MapCameraChangedEvent) =>
-            console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-          }>
-          </Map>
-          </APIProvider>
-    
-        
-      ); 
+function SGWCampus() {
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const { location: userLocation } = useContext(LocationContext);
+  const [isUserInsideBuilding, setIsUserInsideBuilding] = useState(false);
+
+  useEffect(() => {
+    fetch("/Building.geojson") 
+      .then((response) => response.json())
+      .then((data) => setGeoJsonData(data))
+      .catch((error) => console.error("Error loading SGW GeoJSON:", error));
+  }, []);
+
+  return (
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["geometry"]}>
+      <Map defaultZoom={17} defaultCenter={CAMPUS_COORDINATES}>
+        {geoJsonData && <MapComponent geoJsonData={geoJsonData} setIsUserInsideBuilding={setIsUserInsideBuilding} />}
+        {isUserInsideBuilding && userLocation && <Marker position={userLocation} />}
+      </Map>
+    </APIProvider>
+  );
 }
+
+export default SGWCampus
+
+
+
