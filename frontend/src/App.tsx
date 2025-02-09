@@ -23,8 +23,10 @@ function App() {
       <Outlet />
 
       {!isAuthRoute && <BottomNavBar />}
+
     </div>
   );
 }
 
 export default App;
+
