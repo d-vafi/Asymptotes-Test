@@ -17,7 +17,6 @@ module.exports = defineConfig({
       return config;
     },
   },
-
   component: {
     devServer: {
       framework: "react",
@@ -25,3 +24,6 @@ module.exports = defineConfig({
     },
   },
 });
+  
+
+

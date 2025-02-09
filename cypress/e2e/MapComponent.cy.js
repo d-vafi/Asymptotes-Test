@@ -14,4 +14,5 @@ describe("MapComponent", () => {
         cy.window().should("have.property", "google");
     });
   });
+  
 

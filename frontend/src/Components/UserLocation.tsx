@@ -1,9 +1,14 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
-import { LocationContext } from "./LocationContext";
+
+interface Location {
+  lat: number;
+  lng: number;
+}
 
 function UserLocation() {
-  const { location, setLocation, error, setError } = useContext(LocationContext);
+  const [location, setLocation] = useState<Location | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isCalibrating, setIsCalibrating] = useState<boolean>(true);
   const [isOnCampus, setIsOnCampus] = useState<boolean | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -34,12 +39,12 @@ function UserLocation() {
       setIsModalVisible(false);
     };
 
-    const handleError = (err: GeolocationPositionError) => {
+    const error = (err: GeolocationPositionError) => {
       setError("Failed to get location. Please allow access and try later.");
       console.error(err);
     };
 
-    const id = navigator.geolocation.watchPosition(success, handleError, {
+    const id = navigator.geolocation.watchPosition(success, error, {
       enableHighAccuracy: true,
       timeout: 30000,
       maximumAge: 0,
@@ -62,6 +67,7 @@ function UserLocation() {
   const handleCancel = () => {
     setIsOnCampus(false);
     setIsModalVisible(false);
+
     if (watchId !== null) {
       navigator.geolocation.clearWatch(watchId);
       console.log("Location tracking stopped.");
