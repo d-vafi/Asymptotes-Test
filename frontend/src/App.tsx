@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react'; // import useState for managing authentication
+import { useState } from 'react'; 
 import SGWCampus from './pages/SGWCampus';
 import LOYCampus from './pages/LOYCampus';
 
@@ -15,9 +15,11 @@ import NavBar from './Components/NavBar';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
-  // Simulate authentication state (replace with real logic later)
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    // If running under Cypress (or if window.__forceAuth is set), force authentication.
+    (typeof window !== 'undefined' && window.__forceAuth) || false
+  );
   return (
     <div className="flex flex-col top-0 left-0 w-screen h-screen">
       {isAuthenticated && <NavBar />}
