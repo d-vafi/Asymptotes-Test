@@ -1,61 +1,49 @@
-import { useLocation } from 'react-router-dom';
-import '../App.css'
-import { APIProvider, Map, MapCameraChangedEvent } from '@vis.gl/react-google-maps';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useContext } from "react";
+import { useMap } from "@vis.gl/react-google-maps";
+import { LocationContext } from "./LocationContext";
 
+interface MapComponentProps {
+  geoJsonData: any;
+  setIsUserInsideBuilding: (inside: boolean) => void;
+}
 
-const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-const CAMPUS_COORDINATES = {
-  SGW: { lat: 45.4949, lng: -73.5779 },
-  LOY: { lat: 45.4584, lng: -73.6405 },
-};
-
-const getCampusKey = (coordinates: { lat: number; lng: number }) => {
-  return Object.keys(CAMPUS_COORDINATES).find(
-    key =>
-      CAMPUS_COORDINATES[key as keyof typeof CAMPUS_COORDINATES].lat === coordinates.lat &&
-      CAMPUS_COORDINATES[key as keyof typeof CAMPUS_COORDINATES].lng === coordinates.lng
-  ) || null;
-};
-
-
-function MapComponent() {
-  
-  const location = useLocation(); //this is the location of the current page ( not related to the campus locations)
-  const [center, setCenter] = useState(CAMPUS_COORDINATES.SGW);
-  const [zoomSetting, setZoomSetting] = useState(17);
+function MapComponent({ geoJsonData, setIsUserInsideBuilding }: MapComponentProps) {
+  const map = useMap();
+  const { location: userLocation } = useContext(LocationContext);
 
   useEffect(() => {
-    console.log("location: ", location);
-    if (location.state?.campus) {
-      //this sets the center of the map to the campus location specified by the state
-      setCenter(CAMPUS_COORDINATES[location.state.campus as keyof typeof CAMPUS_COORDINATES]);
-      if (location.state.resetZoom) {
-        setZoomSetting(17);
+    if (!map || !geoJsonData || !userLocation) return;
+
+    map.data.forEach((feature) => map.data.remove(feature));
+
+    // Load GeoJSON
+    map.data.addGeoJson(geoJsonData);
+
+    const userLatLng = new google.maps.LatLng(userLocation.lat, userLocation.lng);
+    let userInsideBuilding = false;
+
+    map.data.forEach((feature) => {
+      const geometry = feature.getGeometry();
+      if (geometry?.getType() === "Polygon") {
+        const polygon = new google.maps.Polygon({
+          paths: geometry.getArray().map((path) =>
+            path.getArray().map((coord) => ({ lat: coord.lat(), lng: coord.lng() }))
+          ),
+        });
+
+        if (google.maps.geometry.poly.containsLocation(userLatLng, polygon)) {
+          userInsideBuilding = true;
+          map.data.overrideStyle(feature, { fillColor: "red", fillOpacity: 0.8 });
+        } else {
+          map.data.overrideStyle(feature, { fillColor: "blue", fillOpacity: 0.5 });
+        }
       }
+    });
 
-    }
-  }, [location]);
+    setIsUserInsideBuilding(userInsideBuilding);
+  }, [map, geoJsonData, userLocation]);
 
-  return (
-     <div  id="map-container" data-zoom={zoomSetting} data-location ={getCampusKey(center)} className="flex flex-col top-0 left-0 w-screen h-screen">
-      <APIProvider apiKey={googleKey} onLoad={() => console.log('Maps API has loaded.')}>
-
-        <Map
-         zoom={zoomSetting}
-          center={center}
-          gestureHandling="greedy"
-          onCameraChanged={(ev: MapCameraChangedEvent) =>{
-            console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom);
-            setZoomSetting(ev.detail.zoom);
-            setCenter(ev.detail.center);
-          }
-          }>
-        </Map>
-      </APIProvider>
-    </div>
-  );
+  return null;
 }
 
 export default MapComponent

@@ -1,4 +1,3 @@
-
 describe("MapComponent", () => {
     beforeEach(() => {
         cy.intercept("GET", "/api/auth/me", {

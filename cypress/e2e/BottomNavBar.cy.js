@@ -56,4 +56,3 @@ describe("Bottom Navigation Bar", () => {
         });
     });
 });
-

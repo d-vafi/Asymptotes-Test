@@ -1,25 +1,30 @@
-import '../App.css'
-import { APIProvider, Map, MapCameraChangedEvent } from '@vis.gl/react-google-maps';
-const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+import React, { useEffect, useState, useContext } from "react";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
+import { LocationContext } from "../Components/LocationContext";
+import MapComponent from "../Components/MapComponent";
 
+const CAMPUS_COORDINATES = { lat: 45.4584, lng: -73.6405 };
 
+function LoyolaCampus() {
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const { location: userLocation } = useContext(LocationContext);
+  const [isUserInsideBuilding, setIsUserInsideBuilding] = useState(false);
 
-export default function LOYcampus() {
-
+  useEffect(() => {
+    fetch("/Building.geojson") 
+      .then((response) => response.json())
+      .then((data) => setGeoJsonData(data))
+      .catch((error) => console.error("Error loading Loyola GeoJSON:", error));
+  }, []);
 
   return (
-
-    <APIProvider apiKey={googleKey} onLoad={() => console.log('LOY Maps API has loaded.')}>
-      <Map
-        defaultZoom={17}
-        // 45.45813875411042, -73.6390888797903
-        defaultCenter={{ lat: 45.45813875411042, lng: -73.6390888797903 }}
-        onCameraChanged={(ev: MapCameraChangedEvent) =>
-          console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-        }>
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["geometry"]}>
+      <Map defaultZoom={17} defaultCenter={CAMPUS_COORDINATES}>
+        {geoJsonData && <MapComponent geoJsonData={geoJsonData} setIsUserInsideBuilding={setIsUserInsideBuilding} />}
+        {isUserInsideBuilding && userLocation && <Marker position={userLocation} />}
       </Map>
     </APIProvider>
-
-
   );
 }
+
+export default LoyolaCampus
