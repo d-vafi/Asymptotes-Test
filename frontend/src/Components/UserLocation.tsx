@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import Modal from "./Modal";
 import { LocationContext } from "./LocationContext";
+import { distanceCalculation } from "../utils/distanceCalculation";
 
 function UserLocation() {
   const { location, setLocation, error, setError } = useContext(LocationContext);
@@ -9,6 +10,42 @@ function UserLocation() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [watchId, setWatchId] = useState<number | null>(null);
   const [hasReceivedLocation, setHasReceivedLocation] = useState<boolean>(false);
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+
+  
+  useEffect(() => {
+    fetch("/Building.geojson")
+      .then((response) => response.json())
+      .then((data) => {
+        setGeoJsonData(data);
+      })
+      .catch((error) => {
+        console.error("Error loading GeoJSON data:", error);
+      });
+  }, []);
+
+  
+  const isFarFromCampusBuildings = (userLat: number, userLng: number): boolean => {
+    if (!geoJsonData) return true; 
+
+    const thresholdDistance = 0.5; 
+    let isFar = true;
+
+    geoJsonData.features.forEach((feature: any) => {
+      const geometry = feature.geometry;
+      if (geometry.type === "Polygon") {
+        geometry.coordinates[0].forEach((coord: [number, number]) => {
+          const [lng, lat] = coord;
+          const distance = distanceCalculation(userLat, userLng, lat, lng);
+          if (distance <= thresholdDistance) {
+            isFar = false; 
+          }
+        });
+      }
+    });
+
+    return isFar;
+  };
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -22,9 +59,10 @@ function UserLocation() {
 
       setHasReceivedLocation(true);
 
-      if (accuracy > 15) {
-        console.warn("Waiting for better accuracy...");
-        setIsModalVisible(true); 
+      
+      if (isFarFromCampusBuildings(latitude, longitude)) {
+        console.warn("User is far from campus buildings.");
+        setIsModalVisible(true);
         return;
       }
 
@@ -51,13 +89,12 @@ function UserLocation() {
       navigator.geolocation.clearWatch(id);
       console.log("Stopped watching location.");
     };
-  }, [setLocation, setError]);
+  }, [setLocation, setError, geoJsonData]);
 
   const handleConfirm = () => {
     setIsOnCampus(true);
     setIsModalVisible(false);
   };
-  
 
   const handleCancel = () => {
     setIsOnCampus(false);
@@ -88,5 +125,5 @@ function UserLocation() {
     </div>
   );
 }
- 
-export default UserLocation
+
+export default UserLocation;
